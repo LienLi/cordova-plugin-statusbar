@@ -20,8 +20,10 @@
 package org.apache.cordova.statusbar;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -56,6 +58,11 @@ public class StatusBar extends CordovaPlugin {
                 // Clear flag FLAG_FORCE_NOT_FULLSCREEN which is set initially
                 // by the Cordova.
                 Window window = cordova.getActivity().getWindow();
+                 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    window.setStatusBarColor(Color.TRANSPARENT);
+                }
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
                 // Read 'StatusBarBackgroundColor' from config.xml, default is #000000.
@@ -159,6 +166,11 @@ public class StatusBar extends CordovaPlugin {
             else return args.getBoolean(0) == false;
         }
 
+        if("statusBarHeight".equals(action)){
+            this.getStatusBarHeight(callbackContext);
+            return true;
+        }
+
         return false;
     }
 
@@ -197,5 +209,13 @@ public class StatusBar extends CordovaPlugin {
                                 | View.SYSTEM_UI_FLAG_VISIBLE);
             }
         }
+    }
+
+    private void getStatusBarHeight(final CallbackContext callbackContext){
+        Resources resources = cordova.getActivity().getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen","android");
+        int height = resources.getDimensionPixelSize(resourceId);
+        Log.v("dbw", "Status height:" + height);
+        callbackContext.success(height);
     }
 }

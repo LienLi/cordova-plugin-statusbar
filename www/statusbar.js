@@ -48,6 +48,10 @@ var StatusBar = {
         exec(null, null, "StatusBar", "overlaysWebView", [doOverlay]);
     },
 
+    statusBarHeight：function(){
+        exec(success, error, "StatusBar", "statusBarHeight", []);
+    }
+
     styleDefault: function () {
         // dark text ( to be used on a light background )
         exec(null, null, "StatusBar", "styleDefault", []);
